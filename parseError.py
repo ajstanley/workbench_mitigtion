@@ -56,6 +56,3 @@ text_file = open("mediation.csv", "wt")
 n = text_file.write(output)
 text_file.close()
 
-
-def parse_node(node):
-    bits = node.split(' ')
