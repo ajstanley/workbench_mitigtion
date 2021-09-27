@@ -21,8 +21,9 @@ if args.secondary:
         lines = f.readlines()
         for line in lines:
             if "INFO" in line:
+                words = line.split()
                 pid = line.split('/node/')[1].strip('.\n')
-                success.append(pid)
+                success.append(words[7])
 
 with open(args.input) as f:
     lines = f.readlines()
@@ -30,7 +31,6 @@ with open(args.input) as f:
     pair = []
     output = 'node_id, file, media_use_tid\n'
     breaker = '--\n'
-    success =[]
     if lines[-1] != breaker:
         lines.append(breaker)
 
@@ -45,12 +45,15 @@ with open(args.input) as f:
     for candidate in pairs:
 
         node = parse_node(candidate.pop(0))
-        if len(success) > 0:
-            if node in success:
-                continue
+        # if len(success) > 0:
+        #     if node in success:
+        #         continue
         for item in candidate:
             if 'Media' in item:
-                media = parse_media(item)
+                media = parse_media(item).strip()
+                if len(success) > 0:
+                    if media in success:
+                        continue
                 media_use = ''
                 if 'OBJ' in media or 'PDF' in media:
                     media_use = 'http://pcdm.org/use#OriginalFile'
@@ -64,4 +67,3 @@ print(output)
 text_file = open("mediation.csv", "wt")
 n = text_file.write(output)
 text_file.close()
-
